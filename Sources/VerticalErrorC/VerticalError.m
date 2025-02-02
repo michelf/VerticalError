@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "VerticalError.h"
 
-#define  VERTICAL_FUNC_ATTR  static __attribute__((nomerge)) __attribute__((noinline))
+#define  VERTICAL_FUNC_ATTR  static __attribute__((nomerge)) __attribute__((noinline)) __attribute__((disable_tail_calls))
 
 typedef struct {
 	NSString *message;
