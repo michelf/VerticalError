@@ -7,7 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 do { _VerticalError_BOTTOM(message, __FILE_NAME__, __LINE__, nil); } while(0)
 
 
-__attribute__((nomerge, noinline))
+__attribute__((nomerge)) __attribute__((noinline))
 void _VerticalError_BOTTOM(NSString *message, const char * file, int line, void(^__nullable handler)(NSString *));
 
 NS_ASSUME_NONNULL_END

@@ -13,7 +13,10 @@ typedef void(* VerticalError_Func)();
 
 VERTICAL_FUNC_ATTR VerticalError_Func VerticalError_GetNext(VerticalError * error);
 
+__attribute__((noreturn))
 VERTICAL_FUNC_ATTR void _VerticalError_TOP(VerticalError * message);
+
+__attribute__((noreturn))
 void _VerticalError_BOTTOM(NSString * message, const char * file, int line, void(^__nullable terminate)(NSString *)) {
 	if (message == nil) {
 		message = @"";
@@ -30,6 +33,10 @@ void _VerticalError_BOTTOM(NSString * message, const char * file, int line, void
 	error.pos = error.message.length;
 	error.terminate = terminate;
 	VerticalError_GetNext(&error)(&error);
+
+	// theorically not reachable, but will silence compiler warning and do the
+	// right thing if somehow reached
+	_VerticalError_TOP(&error);
 }
 
 #define  VERTICAL_NEXT(error)  \
@@ -101,12 +108,13 @@ VERTICAL_FUNC_ATTR void error_7(VerticalError * error) { VERTICAL_NEXT(error); }
 VERTICAL_FUNC_ATTR void error_8(VerticalError * error) { VERTICAL_NEXT(error); }
 VERTICAL_FUNC_ATTR void error_9(VerticalError * error) { VERTICAL_NEXT(error); }
 
+__attribute__((noreturn))
 VERTICAL_FUNC_ATTR void _VerticalError_TOP(VerticalError * error) {
 	if (error->terminate) {
 		error->terminate(error->message);
-	} else {
-		@throw [NSException exceptionWithName:@"VerticalError" reason:error->message userInfo:nil];
 	}
+	NSLog(@"%@", error->message);
+	abort();
 }
 
 static VerticalError_Func VerticalError_GetNext(VerticalError * error) {
